@@ -129,5 +129,6 @@ func (u *UserControllerV1) UpdateUser(context *gin.Context) {
 		})
 	}
 
+	u.app.Users.Update(updateUser.ID, application.UpdateUser{Username: &updateUser.Username})
 
 }

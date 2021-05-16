@@ -31,7 +31,7 @@ func V1(app *application.App) *gin.Engine {
 		group.GET("/:id/", userController.DetailUser)
 		group.PUT("/:id/", userController.UpdateUser)
 		group.DELETE("/:id/")
-		//group.PATCH("/:id/", userController.UpdateUser)
+		group.PATCH("/:id/", userController.UpdateUser)
 	}
 
 

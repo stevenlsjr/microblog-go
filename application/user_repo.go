@@ -37,3 +37,11 @@ func (u *UserRepo) Create(user *models.BlogUser) (*models.BlogUser, error) {
 	}
 	return user, nil
 }
+
+type UpdateUser struct {
+	Username *string
+}
+
+func (u *UserRepo) Update(id string, fields UpdateUser) (*models.BlogUser, error){
+	return nil, errors.New("not implemented")
+}
