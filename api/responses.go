@@ -4,7 +4,7 @@ type (
 	ResponseError struct {
 		Message string `json:"message"`
 		Status  string `json:"status"`
-		Data string `json:"data"`
+		Data    string `json:"data"`
 	}
 )
 

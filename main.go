@@ -29,5 +29,9 @@ func main() {
 		panic(err)
 	}
 	api := api2.V1(app)
-	api.Run(app.Config.Addr())
+
+	if err := api.Run(app.Config.Addr()); err != nil {
+		panic(err)
+	}
+
 }

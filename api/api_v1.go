@@ -7,33 +7,30 @@ import (
 )
 
 type ErrorBody struct {
-	Message string `json: "message"`
-	Status  string `json: "message"`
+	Message string `json:"message"`
+	Status  string `json:"message"`
 }
 
 func V1(app *application.App) *gin.Engine {
 	router := gin.Default()
-	userController := UserControllerV1{app: app}
+	userV1 := NewUsersV1(app)
 
 	router.GET("/", func(c *gin.Context) {
 		log.Debug().Msg(c.Request.Host)
-		c.JSON(200, struct {
-			Users string
-		}{
-			Users: "/users/",
-		})
+		index := map[string]string{
+			"users": "/users/",
+		}
+		c.JSON(200, index)
 	})
-	{
-		group := router.Group("/users")
-		group.GET("/", userController.ListUsers)
-		group.POST("/", userController.CreateUser)
 
-		group.GET("/:id/", userController.DetailUser)
-		group.PUT("/:id/", userController.UpdateUser)
-		group.DELETE("/:id/")
-		group.PATCH("/:id/", userController.UpdateUser)
-	}
+	userRoutes := router.Group("/users")
+	userRoutes.GET("/", userV1.List)
+	userRoutes.GET("/:id/", userV1.Detail)
 
+	userRoutes.POST("/", userV1.Create)
+	userRoutes.PUT("/:id/", userV1.Update)
+	userRoutes.PATCH("/:id/", userV1.PartialUpdate)
+	userRoutes.DELETE("/:id/", userV1.Delete)
 
 	return router
 }

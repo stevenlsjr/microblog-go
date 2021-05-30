@@ -12,22 +12,44 @@ import (
 type App struct {
 	Config *config.Config
 	Db     *gorm.DB
-	Users  *UserRepo
 }
 
 func New(config *config.Config) (*App, error) {
-	db, err := gorm.Open(postgres.Open(config.DatabaseDSN), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
+	gormConfig := &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Error),
+	}
+	dsn := postgres.Open(config.DatabaseDSN)
+	db, err := gorm.Open(dsn, gormConfig)
 	if err != nil {
 		return nil, err
 	}
-	users := &UserRepo{db: db}
-	app := &App{Db: db, Config: config, Users: users}
-	err = db.AutoMigrate(models.AllModels()...)
-	if err != nil {
-		log.Error().Err(err).Msg("could not run migrations")
+
+	app := &App{Db: db, Config: config}
+
+	if err := app.Init(); err != nil {
 		return nil, err
 	}
+
 	return app, nil
+}
+
+func (a *App) Init() error {
+	db := a.Db
+
+	if q := db.Exec("CREATE EXTENSION IF NOT EXISTS pgcrypto"); q.Error != nil {
+		return q.Error
+	}
+	if err := db.AutoMigrate(models.AllModels()...); err != nil {
+		log.Error().Err(err).Msg("could not run migrations")
+		return err
+	}
+	return nil
+}
+
+func FromEnv() (*App, error) {
+	cfg, err := config.FromEnv()
+	if err != nil {
+		return nil, err
+	}
+	return New(cfg)
 }

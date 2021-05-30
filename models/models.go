@@ -6,10 +6,10 @@ import (
 )
 
 type UuidModel struct {
-	ID        string         `gorm:"primarykey;default:gen_random_uuid()" json:"id"`
-	CreatedAt time.Time      `json:"createdAt"`
-	UpdatedAt time.Time      `json:"updatedAt"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt"`
+	ID        string         `gorm:"primarykey;default:gen_random_uuid()" json:"id" faker:"uuid_hyphenated"`
+	CreatedAt time.Time      `json:"createdAt" faker:"-"`
+	UpdatedAt time.Time      `json:"updatedAt" faker:"-"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt" faker:"-"`
 }
 
 func NewUuidModel(ID string) *UuidModel {
@@ -19,13 +19,9 @@ func NewUuidModel(ID string) *UuidModel {
 	return &model
 }
 
-type BlogUser struct {
-	UuidModel
-	Username string `gorm:"unique;index" json:"username"`
-}
-
 func AllModels() []interface{} {
 	return []interface{}{
-		&BlogUser{},
+		&User{},
+		&Message{},
 	}
 }

@@ -35,7 +35,7 @@ func TestToAppError(t *testing.T) {
 			expectType: &ErrDuplicateKey{},
 		},
 		{ // unexpected error
-			pgError: &pgconn.PgError{Code: PgErrorAdminShutdown},
+			pgError:    &pgconn.PgError{Code: PgErrorAdminShutdown},
 			expectType: &pgconn.PgError{Code: PgErrorAdminShutdown},
 		},
 	}
